@@ -31,8 +31,8 @@ int main(int argc, char * argv[]) {
   string s1_matched, s2_matched;
 
   dynamic_programming(min_cost, s1, s2, MISMATCH_COST, GAP_COST);
-  dynamic_programming_trace_back(s1_matched, s2_matched, min_cost, s1, s2,
-                                 MISMATCH_COST, GAP_COST);
+  dynamic_programming_find_alignment(s1_matched, s2_matched, min_cost, s1, s2,
+                                     MISMATCH_COST, GAP_COST);
 
   std::reverse(s1_matched.begin(), s1_matched.end());
   std::reverse(s2_matched.begin(), s2_matched.end());

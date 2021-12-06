@@ -21,13 +21,13 @@ void dynamic_programming(std::vector<std::vector<int>> & min_cost,
 }
 
 
-void dynamic_programming_trace_back(std::string & s1_matched,
-                                    std::string & s2_matched,
-                                    std::vector<std::vector<int>> & min_cost,
-                                    const std::string & s1,
-                                    const std::string & s2,
-                                    std::unordered_map<char, std::unordered_map<char, int>> & mismatch_cost,
-                                    const int gap_cost) {
+void dynamic_programming_find_alignment(std::string & s1_matched,
+                                        std::string & s2_matched,
+                                        std::vector<std::vector<int>> & min_cost,
+                                        const std::string & s1,
+                                        const std::string & s2,
+                                        std::unordered_map<char, std::unordered_map<char, int>> & mismatch_cost,
+                                        int gap_cost) {
   for (int i = (int) s1.size(), j = (int) s2.size(), k = 100;
        k > 0 && i >= 0 && j >= 0; k--) {
     if (i != 0 && j != 0) {

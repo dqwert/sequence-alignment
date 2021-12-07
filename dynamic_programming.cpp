@@ -5,7 +5,6 @@ using namespace std;
 
 
 int main(int argc, char * argv[]) {
-  if (argc < 2) { cerr << "写错命令行参数啦衰仔！" << endl; }
   string input_filename = argv[1];
 
   SequenceAlignment sequenceAlignment(input_filename);

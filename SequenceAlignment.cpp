@@ -100,17 +100,16 @@ void SequenceAlignment::generate_string(std::string & s,
 pair<string, string>
 SequenceAlignment::find_alignment_dynamic_programming(const string & s1,
                                                       const string & s2) {
+//  std::cout << "[dynamic_programming_find_alignment] s.size=" << s1.size() << "," << s2.size() << std::endl;
 
-  std::cout << "[dynamic_programming_find_alignment] s.size=" << s1.size()
-            << "," << s2.size() << std::endl;
   auto min_cost = do_align_dynamic_programming(s1, s2);
 
   string match1, match2;
 
   for (int i = (int) s2.size(), j = (int) s1.size(); i >= 0 && j >= 0;) {
     if (i != 0 && j != 0) {
-      if (abs(min_cost[i][j]) == abs(min_cost[i - 1][j - 1]) +
-                                 mismatch_cost[s2[i - 1]][s1[j - 1]]) {
+      if (abs(min_cost[i][j]) ==
+          abs(min_cost[i - 1][j - 1]) + mismatch_cost[s2[i - 1]][s1[j - 1]]) {
         min_cost[i][j] = -min_cost[i][j];
 
         match1.push_back(s1[--j]);
@@ -118,13 +117,13 @@ SequenceAlignment::find_alignment_dynamic_programming(const string & s1,
       } else if (abs(min_cost[i][j]) == abs(min_cost[i][j - 1]) + gap_cost) {
         min_cost[i][j] = -min_cost[i][j];
 
-        match1.push_back('_');
-        match2.push_back(s2[--i]);
+        match1.push_back(s1[--j]);
+        match2.push_back('_');
       } else if (abs(min_cost[i][j]) == abs(min_cost[i - 1][j]) + gap_cost) {
         min_cost[i][j] = -min_cost[i][j];
 
-        match1.push_back(s1[--j]);
-        match2.push_back('_');
+        match1.push_back('_');
+        match2.push_back(s2[--i]);
       } else { assert(false); }
     } else {  // i == 0 || j == 0
       if (i == 0 && j == 0) {
@@ -132,20 +131,20 @@ SequenceAlignment::find_alignment_dynamic_programming(const string & s1,
       } else if (i == 0) {
         min_cost[i][j] = -min_cost[i][j];
 
-        match1.push_back('_');
-        match2.push_back(s2[--i]);
+        match1.push_back(s1[--j]);
+        match2.push_back('_');
       } else {  // if j ==0
         min_cost[i][j] = -min_cost[i][j];
 
-        match1.push_back(s1[--j]);
-        match2.push_back('_');
+        match1.push_back('_');
+        match2.push_back(s2[--i]);
       }
     }
   }
   std::reverse(match1.begin(), match1.end());
   std::reverse(match2.begin(), match2.end());
 
-  trace_back(s1, s2, min_cost);
+//  trace_back(s1, s2, min_cost);
 
   return {match1, match2};
 }
@@ -193,7 +192,7 @@ SequenceAlignment::trace_back(string s1, string s2,
         else if (i == 0) { std::cout << std::setw(6) << " ↑"; }
         else { std::cout << std::setw(6) << " ←"; }
       }
-      if (min_cost[i][j] < 0) {
+      if (min_cost[i][j] <= 0) {
         std::cout << "[" << std::setw(4) << abs(min_cost[i][j]) << "]";
       } else {
         std::cout << std::setw(5) << min_cost[i][j] << " ";
@@ -207,9 +206,9 @@ SequenceAlignment::trace_back(string s1, string s2,
 pair<string, string>
 SequenceAlignment::divide_conquer_alignment(std::string s1, std::string s2,
                                             int depth) {
-  for (int i = 0; i < depth; i++) { std::cout << "  "; }
-  std::cout << "[divide_conquer_alignment] s1=" << s1 << ", s2=" << s2
-            << ", depth=" << depth << std::endl;
+//  for (int i = 0; i < depth; i++) { std::cout << "  "; }
+//  std::cout << "[divide_conquer_alignment] s1=" << s1 << ", s2=" << s2
+//            << ", depth=" << depth << std::endl;
 
   string match1, match2;
 
@@ -252,12 +251,12 @@ SequenceAlignment::divide_conquer_alignment(std::string s1, std::string s2,
   }
 //  cout << endl;
 
-  for (int i = 0; i < depth; i++) { std::cout << "  "; }
-  std::cout << "  found node@("
-            << i_separator << ", " << i_min_cost << ") with cost=" << min_cost
-            << ", min_cost.size=" << min_cost_forward.size()
-            << ", "
-            << min_cost_backward.size() << std::endl;
+//  for (int i = 0; i < depth; i++) { std::cout << "  "; }
+//  std::cout << "  found node@("
+//            << i_separator << ", " << i_min_cost << ") with cost=" << min_cost
+//            << ", min_cost.size=" << min_cost_forward.size()
+//            << ", "
+//            << min_cost_backward.size() << std::endl;
 
   pair<string, string> upper_left =
     divide_conquer_alignment(s1.substr(0, i_min_cost),

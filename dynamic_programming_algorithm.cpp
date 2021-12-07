@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <limits>
+#include <map>
 
 
 void divide_conquer_alignment(
@@ -14,9 +15,9 @@ void divide_conquer_alignment(
   const int gap_cost, int depth) {
 
   for (int i = 0; i < depth; i++) { std::cout << "  "; }
-  std::cout << "[divide_conquer_alignment] s1@[" << s1_begin << "," << s1_end
-       << "), s2@[" << s2_begin << "," << s2_end << "), depth=" << depth
-       << std::endl;
+  std::cout << "[divide_conquer_alignment] str1@[" << s1_begin << "," << s1_end
+            << "), str2@[" << s2_begin << "," << s2_end << "), depth=" << depth
+            << std::endl;
 
   assert(s1_end >= s1_begin && s2_end >= s2_begin);
 
@@ -40,18 +41,19 @@ void divide_conquer_alignment(
       s1_seg, s2_seg, mismatch_cost, gap_cost);
 
     for (int i = 0; i < depth; i++) { std::cout << "  "; }
-    std::cout << "get s1="
-         << s1.substr(s1_begin, s1_end - s1_begin) << ", s2="
-         << s2.substr(s2_begin, s2_end - s2_begin)
-         << ", matched s1=" << s1_matched << ", s2=" << s2_matched << std::endl;
+    std::cout << "get str1="
+              << s1.substr(s1_begin, s1_end - s1_begin) << ", str2="
+              << s2.substr(s2_begin, s2_end - s2_begin)
+              << ", matched str1=" << s1_matched << ", str2=" << s2_matched
+              << std::endl;
 //    trace_back(min_cost, s1_seg, s2_seg, mismatch_cost, gap_cost);
     s1_res.append(s1_matched);
     s2_res.append(s2_matched);
     return;
   }
 
-  // select median char of s1 as the separator, find point on path,
-  // then do the divide on s1 and s2, by (separator, index with min cost)
+  // select median char of str1 as the separator, find point on path,
+  // then do the divide on str1 and str2, by (separator, index with min cost)
   int i_separator = (s1_begin + s1_end) / 2;
 
   auto min_cost_forward = dynamic_programming_space_efficient(
@@ -66,30 +68,33 @@ void divide_conquer_alignment(
 
 
   int min_c = std::numeric_limits<int>::max();
-  int i_min = -1;
+  int i_min_cost = -1;
   for (int i = 0; i < min_cost_forward.size(); i++) {
     int curr_c = min_cost_forward[i] + min_cost_backward[i];
     if (curr_c < min_c) {
       min_c = curr_c;
-      i_min = i;
+      i_min_cost = i;
     }
+    std::cout << curr_c << ",";
   }
+  std::cout << std::endl;
 
-  i_min += s2_begin;
+  i_min_cost += s2_begin;
 
   for (int i = 0; i < depth; i++) { std::cout << "  "; }
   std::cout << "  found node@("
-       << i_separator << ", " << i_min << ") with cost=" << min_c
-       << ", min_cost_forward/backward.size=" << min_cost_forward.size() << ", "
-       << min_cost_backward.size() << std::endl;
+            << i_separator << ", " << i_min_cost << ") with cost=" << min_c
+            << ", min_cost_forward/backward.size=" << min_cost_forward.size()
+            << ", "
+            << min_cost_backward.size() << std::endl;
 
 
   divide_conquer_alignment(s1, s1_begin, i_separator + 1,
-                           s2, s2_begin, i_min + 1,
+                           s2, s2_begin, i_min_cost + 1,
                            s1_res, s2_res,
                            mismatch_cost, gap_cost, depth + 1);
   divide_conquer_alignment(s1, i_separator + 1, s1_end,
-                           s2, i_min + 1, s2_end,
+                           s2, i_min_cost + 1, s2_end,
                            s1_res, s2_res,
                            mismatch_cost, gap_cost, depth + 1);
 }

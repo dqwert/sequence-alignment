@@ -37,20 +37,16 @@ int main(int argc, char * argv[]) {
 
   // -------------------- ready to run algorithm --------------------
 
-//  test_dynamic_programming(s1_matched, s2_matched, s1, s2, MISMATCH_COST,
+//  test_dynamic_programming(s1_matched, s2_matched, str1, str2, MISMATCH_COST,
 //                           GAP_COST);
-//  test_forward_backward(s1, s2, MISMATCH_COST, GAP_COST);
+//  test_forward_backward(str1, str2, MISMATCH_COST, GAP_COST);
 
-  s1_matched = "ACACACTGACTACTGACTGGTGACTACTGACTGGACTGACT_ACTGAC_TGGTGACTACTGACTG__G";
-  s2_matched = "_____TT____A_T______TA__TAC_G_C_G_AC_G_C_GATT___AT____AC_GC_GA_C_GCG";
+  divide_conquer_alignment(
+    s1, 0, (int) s1.size(), s2, 0, (int) s2.size(),
+    s1_matched, s2_matched,
+    MISMATCH_COST, GAP_COST, 0);
 
-  cout << alignment_cost(s1_matched, s2_matched, MISMATCH_COST) << endl;
-
-//  divide_conquer_alignment(
-//    s1, 0, (int) s1.size(), s2, 0, (int) s2.size(),
-//    s1_matched, s2_matched,
-//    MISMATCH_COST, GAP_COST, 0);
-
+  cout << alignment_cost("ACACACTGACTACTGACTGGTGACTACTGACTGGACTGACTACTGACTGGTGACTAC_TGACTG_G", "______T___TA_T___T____A_TAC_G_C_G_AC_G_C____GA_T__T_A_TACGCGAC_GCG", MISMATCH_COST) << endl;
   // --------------------   algorithm finished   --------------------
 
   cout << "s1_res=" << s1_matched << "\ns2_res=" << s2_matched << endl;

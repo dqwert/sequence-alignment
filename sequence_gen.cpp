@@ -1,4 +1,4 @@
-#include "SequenceGen.h"
+#include "sequence_gen.h"
 
 void process_input(const std::string & input_filename, std::string & s1,
                    std::string & s2, std::vector<int> & insert_pos1,
@@ -58,34 +58,3 @@ void print_mismatch_cost(
 }
 
 
-void trace_back(std::vector<std::vector<int>> & min_cost, std::string & s1,
-                std::string & s2,
-                std::unordered_map<char, std::unordered_map<char, int>> mismatch_cost,
-                int gap_cost) {
-  std::cout << "[trace_back]" << std::endl;
-  for (int i = 0, s1_size = (int) s1.size(); i <= s1_size; i++) {
-    for (int j = 0, s2_size = (int) s2.size(); j <= s2_size; j++) {
-      if (i != 0 && j != 0) {
-        if (abs(min_cost[i][j]) ==
-          abs(min_cost[i - 1][j - 1]) + mismatch_cost[s1[i - 1]][s2[j - 1]]) {
-          std::cout << std::setw(6) << " ↖";
-        } else if (abs(min_cost[i][j]) == abs(min_cost[i][j - 1]) + gap_cost) {
-          std::cout << std::setw(6) << " ←";
-        } else if (abs(min_cost[i][j]) == abs(min_cost[i - 1][j]) + gap_cost) {
-          std::cout << std::setw(6) << " ↑";
-        } else { assert(false); }
-      } else {
-        if (i == 0 && j == 0) { std::cout << std::setw(6) << " ↘"; }
-        else if (i == 0) { std::cout << std::setw(6) << " ↑"; }
-        else { std::cout << std::setw(6) << " ←"; }
-      }
-      if (min_cost[i][j] < 0) {
-        std::cout << "[" << std::setw(4) << abs(min_cost[i][j]) << "]";
-      } else {
-        std::cout << std::setw(5) << min_cost[i][j] << " ";
-      }
-    }
-    std::cout << std::endl;
-  }
-  std::cout << std::endl;
-}

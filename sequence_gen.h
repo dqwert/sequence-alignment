@@ -1,5 +1,5 @@
-#ifndef SEQUENCE_ALIGNMENT_SEQUENCEGEN_H
-#define SEQUENCE_ALIGNMENT_SEQUENCEGEN_H
+#ifndef SEQUENCE_ALIGNMENT_SEQUENCE_GEN_H
+#define SEQUENCE_ALIGNMENT_SEQUENCE_GEN_H
 
 #include <iostream>
 #include <fstream>
@@ -18,10 +18,5 @@ std::unordered_map<char, std::unordered_map<char, int>> construct_mismatch_cost(
 
 void print_mismatch_cost(std::unordered_map<char, std::unordered_map<char, int>> & cost);
 
-void trace_back(std::vector<std::vector<int>> & min_cost, std::string & s1, std::string & s2,
-                std::unordered_map<char, std::unordered_map<char, int>> mismatch_cost,
-                int gap_cost);
 
-
-
-#endif //SEQUENCE_ALIGNMENT_SEQUENCEGEN_H
+#endif //SEQUENCE_ALIGNMENT_SEQUENCE_GEN_H

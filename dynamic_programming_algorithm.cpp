@@ -3,6 +3,97 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
+#include <limits>
+
+
+void divide_conquer_alignment(
+  std::string & s1, int s1_begin, int s1_end,
+  std::string & s2, int s2_begin, int s2_end,
+  std::string & s1_res, std::string & s2_res,
+  std::unordered_map<char, std::unordered_map<char, int>> & mismatch_cost,
+  const int gap_cost, int depth) {
+
+  for (int i = 0; i < depth; i++) { std::cout << "  "; }
+  std::cout << "[divide_conquer_alignment] s1@[" << s1_begin << "," << s1_end
+       << "), s2@[" << s2_begin << "," << s2_end << "), depth=" << depth
+       << std::endl;
+
+  assert(s1_end >= s1_begin && s2_end >= s2_begin);
+
+  if (s1_end - s1_begin <= 2 || s2_end - s2_begin <= 2) {
+
+    for (int i = 0; i < depth; i++) { std::cout << "  "; }
+    std::cout << "  Calling dynamic_programming, ";
+
+    std::string s1_matched, s2_matched;
+    s1_matched.reserve((size_t) pow(2, s1_end - s1_begin + 2));
+    s2_matched.reserve((size_t) pow(2, s2_end - s2_begin + 2));
+
+    std::string s1_seg = s1.substr(s1_begin, s1_end - s1_begin);
+    std::string s2_seg = s2.substr(s2_begin, s2_end - s2_begin);
+
+    auto min_cost = dynamic_programming(
+      s1_seg, s2_seg,
+      mismatch_cost, gap_cost);
+    dynamic_programming_find_alignment(
+      s1_matched, s2_matched, min_cost,
+      s1_seg, s2_seg, mismatch_cost, gap_cost);
+
+    for (int i = 0; i < depth; i++) { std::cout << "  "; }
+    std::cout << "get s1="
+         << s1.substr(s1_begin, s1_end - s1_begin) << ", s2="
+         << s2.substr(s2_begin, s2_end - s2_begin)
+         << ", matched s1=" << s1_matched << ", s2=" << s2_matched << std::endl;
+//    trace_back(min_cost, s1_seg, s2_seg, mismatch_cost, gap_cost);
+    s1_res.append(s1_matched);
+    s2_res.append(s2_matched);
+    return;
+  }
+
+  // select median char of s1 as the separator, find point on path,
+  // then do the divide on s1 and s2, by (separator, index with min cost)
+  int i_separator = (s1_begin + s1_end) / 2;
+
+  auto min_cost_forward = dynamic_programming_space_efficient(
+    s1, s1_begin, i_separator,
+    s2, s2_begin, s2_end,
+    mismatch_cost, gap_cost);
+
+  auto min_cost_backward = dynamic_programming_space_efficient_backward(
+    s1, i_separator, s1_end,
+    s2, s2_begin, s2_end,
+    mismatch_cost, gap_cost);
+
+
+  int min_c = std::numeric_limits<int>::max();
+  int i_min = -1;
+  for (int i = 0; i < min_cost_forward.size(); i++) {
+    int curr_c = min_cost_forward[i] + min_cost_backward[i];
+    if (curr_c < min_c) {
+      min_c = curr_c;
+      i_min = i;
+    }
+  }
+
+  i_min += s2_begin;
+
+  for (int i = 0; i < depth; i++) { std::cout << "  "; }
+  std::cout << "  found node@("
+       << i_separator << ", " << i_min << ") with cost=" << min_c
+       << ", min_cost_forward/backward.size=" << min_cost_forward.size() << ", "
+       << min_cost_backward.size() << std::endl;
+
+
+  divide_conquer_alignment(s1, s1_begin, i_separator + 1,
+                           s2, s2_begin, i_min + 1,
+                           s1_res, s2_res,
+                           mismatch_cost, gap_cost, depth + 1);
+  divide_conquer_alignment(s1, i_separator + 1, s1_end,
+                           s2, i_min + 1, s2_end,
+                           s1_res, s2_res,
+                           mismatch_cost, gap_cost, depth + 1);
+}
+
 
 std::vector<std::vector<int>> dynamic_programming(
   const std::string & s1, const std::string & s2,
@@ -35,8 +126,10 @@ void dynamic_programming_find_alignment(
   std::unordered_map<char, std::unordered_map<char, int>> & mismatch_cost,
   int gap_cost) {
 
-  for (int i = (int) s1.size(), j = (int) s2.size(), k = 100;
-       k > 0 && i >= 0 && j >= 0; k--) {
+  std::cout << "[dynamic_programming_find_alignment] s.size=" << s1.size()
+            << "," << s2.size() << std::endl;
+
+  for (int i = (int) s1.size(), j = (int) s2.size(); i >= 0 && j >= 0;) {
     if (i != 0 && j != 0) {
       if (abs(min_cost[i][j]) ==
           abs(min_cost[i - 1][j - 1]) + mismatch_cost[s1[i - 1]][s2[j - 1]]) {
@@ -57,6 +150,7 @@ void dynamic_programming_find_alignment(
       } else { assert(false); }
     } else {  // i == 0 || j == 0
       if (i == 0 && j == 0) {
+        break;
       } else if (i == 0) {
         min_cost[i][j] = -min_cost[i][j];
 
@@ -125,7 +219,6 @@ dynamic_programming_space_efficient_backward(
       min_cost_prev = min_cost_curr;
     }
   }
-
   return min_cost;
 }
 
@@ -161,4 +254,3 @@ void trace_back(
     std::cout << std::endl;
   }
 }
-

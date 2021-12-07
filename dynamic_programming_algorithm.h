@@ -6,19 +6,28 @@
 #include <unordered_map>
 
 
+void divide_conquer_alignment(
+  std::string & s1, int s1_begin, int s1_end,
+  std::string & s2, int s2_begin, int s2_end,
+  std::string & s1_res, std::string & s2_res,
+  std::unordered_map<char, std::unordered_map<char, int>> & mismatch_cost,
+  int gap_cost, int depth);
+
+
 std::vector<std::vector<int>> dynamic_programming(
   const std::string & s1, const std::string & s2,
   std::unordered_map<char, std::unordered_map<char, int>> & cost,
   int gap_cost);
 
 
-void dynamic_programming_find_alignment(std::string & s1_matched,
-                                        std::string & s2_matched,
-                                        std::vector<std::vector<int>> & min_cost,
-                                        const std::string & s1,
-                                        const std::string & s2,
-                                        std::unordered_map<char, std::unordered_map<char, int>> & mismatch_cost,
-                                        int gap_cost);
+void dynamic_programming_find_alignment(
+  std::string & s1_matched,
+  std::string & s2_matched,
+  std::vector<std::vector<int>> & min_cost,
+  const std::string & s1,
+  const std::string & s2,
+  std::unordered_map<char, std::unordered_map<char, int>> & mismatch_cost,
+  int gap_cost);
 
 
 std::vector<int>

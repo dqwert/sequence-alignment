@@ -7,7 +7,10 @@ using namespace std;
 
 
 int main(int argc, char * argv[]) {
-  if (argc < 3) { cerr << "写错命令行参数啦衰仔！" << endl; }
+  if (argc < 3) {
+    cerr << "写错命令行参数啦衰仔！" << endl;
+    return -1;
+  }
 
   // prepare
   string mode_str = string(argv[1]);
@@ -25,6 +28,7 @@ int main(int argc, char * argv[]) {
   SequenceAlignment sequenceAlignment(input_filename);
   int m = (int) sequenceAlignment.str1.size();
   int n = (int) sequenceAlignment.str2.size();
+
   string str1, str2;
 
   auto start = chrono::high_resolution_clock::now();
@@ -42,7 +46,10 @@ int main(int argc, char * argv[]) {
   auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
 
   struct rusage usage;
-  if (0 != getrusage(RUSAGE_SELF, &usage)) { cerr << "getrusage failed!" << endl; }
+  if (0 != getrusage(RUSAGE_SELF, &usage)) {
+    cerr << "getrusage failed!" << endl;
+    return -1;
+  }
 
   int cost = sequenceAlignment.alignment_cost(str1, str2);
 
@@ -53,10 +60,11 @@ int main(int argc, char * argv[]) {
   output << str2.substr(0, SEG_SIZE) << " ";
   output << str2.substr(str2.size() - SEG_SIZE) << endl;
 
-  output << cost << "\n" << (int) duration.count() / 1e6 << endl << (long double) usage.ru_maxrss / 1e3 << endl;
+  output << cost << "\n" << (int) duration.count() / 1e6 << endl
+         << (long double) usage.ru_maxrss / 1e3 << endl;
   output << "(" << m << ", " << n << ") -> " << m * n << endl;
 
   cout << "alignment_cost=" << sequenceAlignment.alignment_cost(str1, str2)
        << endl;
-  cout << "str1=" << str1 << "\nstr2=" << str2 << endl;
+  cout << "str1=" << str1 << "\nstr2=" << str2;
 }

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <chrono>
 #include <sys/resource.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -23,7 +24,7 @@ int main(int argc, char * argv[]) {
   if (mode_str == "basic") { is_efficient = false; }
   else if (mode_str == "efficient") { is_efficient = true; }
   else {
-    cerr << "invalid command-line argument" << endl;
+    cerr << "Invalid command-line argument" << endl;
     return -1;
   }
 
@@ -37,8 +38,6 @@ int main(int argc, char * argv[]) {
   const int SEG_SIZE = 50;
 
   SequenceAlignment sequenceAlignment(input_filename);
-  int m = (int) sequenceAlignment.str1.size();
-  int n = (int) sequenceAlignment.str2.size();
 
   string str1, str2;
 
@@ -56,7 +55,7 @@ int main(int argc, char * argv[]) {
   auto stop = chrono::high_resolution_clock::now();
   auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
 
-  struct rusage usage;
+  struct rusage usage{};
   if (0 != getrusage(RUSAGE_SELF, &usage)) {
     cerr << "getrusage failed!" << endl;
     return -1;
@@ -67,15 +66,21 @@ int main(int argc, char * argv[]) {
   std::ofstream output("output.txt", std::ios_base::out);
 
   output << str1.substr(0, SEG_SIZE) << " ";
-  output << str1.substr(str1.size() - SEG_SIZE) << endl;
+  output << str1.substr(max((int) str1.size() - SEG_SIZE, 0)) << endl;
   output << str2.substr(0, SEG_SIZE) << " ";
-  output << str2.substr(str2.size() - SEG_SIZE) << endl;
+  output << str2.substr(max((int) str2.size() - SEG_SIZE, 0)) << endl;
 
   output << cost << "\n" << (int) duration.count() / 1e6 << endl
          << (long double) usage.ru_maxrss / 1e3;
-//  output << "\n(" << m << ", " << n << ") -> " << m * n;
 
-//  cout << "alignment_cost=" << sequenceAlignment.alignment_cost(str1, str2)
+//  cout << "str1=" << sequenceAlignment.str1 << "\nstr2="
+//       << sequenceAlignment.str2 << "\nmatch1=" << str1 << "\nmatch2=" << str2
 //       << endl;
-//  cout << "str1=" << str1 << "\nstr2=" << str2 << endl;
+
+  // extra check
+//  if (!SequenceAlignment::validator(sequenceAlignment.str1,
+//                                   sequenceAlignment.str2,
+//                                   str1, str2)) {
+//    cout << "Invalid result" << endl;
+//  }
 }

@@ -70,14 +70,14 @@ int SequenceAlignment::alignment_cost(const std::string & s1,
                                       const std::string & s2) {
   int cost = 0;
   for (int i = 0; i < s1.size(); i++) {
-    if (s1[i] == '_' || s2[i] == '_') { cost += 30; }
+    if (s1[i] == '_' || s2[i] == '_') { cost += gap_cost; }
     else { cost += mismatch_cost[s1[i]][s2[i]]; }
   }
   return cost;
 }
 
 
-void SequenceAlignment::print_mismatch_cost() {
+[[maybe_unused]] void SequenceAlignment::print_mismatch_cost() {
   std::cout << "[print_mismatch_cost] cost table:\n";
   std::string s = "ACGT";
   for (char i: s) {
@@ -160,8 +160,8 @@ SequenceAlignment::do_align_dynamic_programming_space_efficient(
   for (int j = 0; j <= s1.size(); j++) { min_cost[j] = j * gap_cost; }
 
   for (int j = 1; j <= s2.size(); j++) {
-    int min_cost_prev = (j - 1) * 30;  // min_cost[j - 1][j - 1]
-    min_cost[0] = j * 30;
+    int min_cost_prev = (j - 1) * gap_cost;  // min_cost[j - 1][j - 1]
+    min_cost[0] = j * gap_cost;
     for (int i = 1; i <= s1.size(); i++) {
       int min_cost_curr = min_cost[i];
       min_cost[i] = std::min(
@@ -212,15 +212,15 @@ SequenceAlignment::divide_conquer_alignment(std::string s1, std::string s2,
 //  std::cout << "[divide_conquer_alignment] s1=" << s1 << ", s2=" << s2
 //            << ", depth=" << depth << std::endl;
 
-  string match1, match2;
 
   if (s1.empty() || s2.empty()) {
+    string match1, match2;
     if (s1.empty()) {
-      for (int i = 0; i < s2.size(); i++) { match2.push_back('_'); }
-      match1 = s2;
+      for (int i = 0; i < s2.size(); i++) { match1.push_back('_'); }
+      match2 = s2;
     } else {
-      for (int i = 0; i < s1.size(); i++) { match1.push_back('_'); }
-      match2 = s1;
+      for (int i = 0; i < s1.size(); i++) { match2.push_back('_'); }
+      match1 = s1;
     }
     return {match1, match2};
   } else if (s1.size() == 1 || s2.size() == 1) {
@@ -229,7 +229,6 @@ SequenceAlignment::divide_conquer_alignment(std::string s1, std::string s2,
 
   // select median char of str1 as the separator, find point on path,
   // then do the divide on str1 and str2, by (separator, index with min cost)
-
   int i_separator = (int) s2.size() / 2;
 
   vector<int> min_cost_forward =
@@ -270,10 +269,24 @@ SequenceAlignment::divide_conquer_alignment(std::string s1, std::string s2,
                              s2.substr(i_separator),
                              depth + 1);
 
-  match1 += upper_left.first;
-  match1 += lower_right.first;
-  match2 += upper_left.second;
-  match2 += lower_right.second;
+  return {upper_left.first + lower_right.first, upper_left.second + lower_right.second};
+}
 
-  return {match1, match2};
+
+bool validate_match_to_string(const string & s, const string & match) {
+  int i = 0;
+  for (char c: s) {
+    while (i < match.size() && match[i] == '_') { i++; }
+    if (c != match[i++]) { return false; }
+  }
+  while (i < match.size() && match[i] == '_') { i++; }
+  return i == match.size();
+}
+
+
+bool SequenceAlignment::validator(const string & s1,
+                                  const string & s2,
+                                  const string & match1,
+                                  const string & match2) {
+  return validate_match_to_string(s1, match1) && validate_match_to_string(s2, match2);
 }

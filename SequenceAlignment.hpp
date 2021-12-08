@@ -25,7 +25,7 @@ public:
 
   int alignment_cost(const std::string & s1, const std::string & s2);
 
-  void print_mismatch_cost();
+  [[maybe_unused]] void print_mismatch_cost();
 
   static void
   generate_string(std::string & s, const std::vector<int> & insert_pos);
@@ -47,6 +47,8 @@ public:
   divide_conquer_alignment(std::string s1, std::string s2, int depth);
 
   [[maybe_unused]] void trace_back(string s1, string s2, vector<std::vector<int>> & min_cost);
+
+  static bool validator(const string & s1, const string & s2, const string & match1, const string & match2);
 };
 
 

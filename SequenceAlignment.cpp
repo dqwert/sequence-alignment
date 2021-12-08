@@ -1,4 +1,4 @@
-#include "SequenceAlignment.h"
+#include "SequenceAlignment.hpp"
 
 
 std::vector<std::vector<int>>
@@ -32,6 +32,8 @@ SequenceAlignment::SequenceAlignment(string & input_file) {
 
   generate_input(str1, str2, input_file);
 //  cout << str1 << endl << str2 << endl;
+  assert(!str1.empty());
+  assert(!str2.empty());
 }
 
 

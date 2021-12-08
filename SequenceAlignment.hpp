@@ -1,5 +1,5 @@
-#ifndef SEQUENCE_ALIGNMENT_SEQUENCEALIGNMENT_H
-#define SEQUENCE_ALIGNMENT_SEQUENCEALIGNMENT_H
+#ifndef SEQUENCE_ALIGNMENT_SEQUENCEALIGNMENT_HPP
+#define SEQUENCE_ALIGNMENT_SEQUENCEALIGNMENT_HPP
 
 
 #include <vector>
@@ -20,7 +20,6 @@ public:
   std::unordered_map<char, std::unordered_map<char, int>> mismatch_cost;
   int gap_cost = 30;
   string str1, str2;
-  string str1_match, str2_match;
 
   explicit SequenceAlignment(string & input_file);
 
@@ -51,4 +50,4 @@ public:
 };
 
 
-#endif //SEQUENCE_ALIGNMENT_SEQUENCEALIGNMENT_H
+#endif //SEQUENCE_ALIGNMENT_SEQUENCEALIGNMENT_HPP

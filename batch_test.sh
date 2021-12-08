@@ -1,4 +1,6 @@
 rm -rf output/*
+madir -p output
+
 rm -rf sequence_alignment
 
 make clean

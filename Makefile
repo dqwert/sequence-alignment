@@ -13,4 +13,4 @@ SequenceAlignment:
 	g++ -std=c++11 -c SequenceAlignment.hpp SequenceAlignment.cpp
 
 clean:
-	rm -rf *.out *.o *.gch efficient basic sequence_alignment
+	rm -rf *.out *.o *.gch efficient basic sequence_alignment *.tmp

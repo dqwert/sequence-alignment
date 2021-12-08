@@ -13,6 +13,10 @@ int main(int argc, char * argv[]) {
   }
 
   string input_filename = argv[1];
+  if (input_filename.empty()) {
+    cerr << "empty filename" << endl;
+    return -1;
+  }
   const int SEG_SIZE = 50;
 
   SequenceAlignment sequenceAlignment(input_filename);

@@ -14,6 +14,11 @@ int main(int argc, char * argv[]) {
 
   // prepare
   string mode_str = string(argv[1]);
+  if (mode_str.empty()) {
+    cerr << "empty mode" << endl;
+    return -1;
+  }
+
   bool is_efficient;
   if (mode_str == "basic") { is_efficient = false; }
   else if (mode_str == "efficient") { is_efficient = true; }
@@ -23,6 +28,12 @@ int main(int argc, char * argv[]) {
   }
 
   string input_filename = argv[2];
+
+  if (mode_str.empty()) {
+    cerr << "empty filename" << endl;
+    return -1;
+  }
+
   const int SEG_SIZE = 50;
 
   SequenceAlignment sequenceAlignment(input_filename);
@@ -66,5 +77,5 @@ int main(int argc, char * argv[]) {
 
   cout << "alignment_cost=" << sequenceAlignment.alignment_cost(str1, str2)
        << endl;
-  cout << "str1=" << str1 << "\nstr2=" << str2;
+  cout << "str1=" << str1 << "\nstr2=" << str2 << endl;
 }

@@ -50,6 +50,6 @@ int main(int argc, char * argv[]) {
   output << str2.substr(str2.size() - SEG_SIZE) << endl;
 
   output << cost << "\n" << (int) duration.count() / 1e6 << endl
-         << (long double) usage.ru_maxrss / 1e3 << endl;
-  output << "(" << m << ", " << n << ") -> " << m * n;
+         << (long double) usage.ru_maxrss / 1e3;
+//  output << "\n(" << m << ", " << n << ") -> " << m * n;
 }

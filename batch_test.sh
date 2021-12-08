@@ -1,5 +1,5 @@
 rm -rf output/*
-madir -p output
+mkdir -p output
 
 rm -rf sequence_alignment
 

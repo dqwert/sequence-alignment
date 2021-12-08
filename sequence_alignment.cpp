@@ -29,7 +29,7 @@ int main(int argc, char * argv[]) {
 
   string input_filename = argv[2];
 
-  if (mode_str.empty()) {
+  if (input_filename.empty()) {
     cerr << "empty filename" << endl;
     return -1;
   }
@@ -73,9 +73,9 @@ int main(int argc, char * argv[]) {
 
   output << cost << "\n" << (int) duration.count() / 1e6 << endl
          << (long double) usage.ru_maxrss / 1e3 << endl;
-  output << "(" << m << ", " << n << ") -> " << m * n << endl;
+  output << "(" << m << ", " << n << ") -> " << m * n;
 
-  cout << "alignment_cost=" << sequenceAlignment.alignment_cost(str1, str2)
-       << endl;
-  cout << "str1=" << str1 << "\nstr2=" << str2 << endl;
+//  cout << "alignment_cost=" << sequenceAlignment.alignment_cost(str1, str2)
+//       << endl;
+//  cout << "str1=" << str1 << "\nstr2=" << str2 << endl;
 }

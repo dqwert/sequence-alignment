@@ -1,6 +1,7 @@
 rm -rf output/*
 rm -rf sequence_alignment
 
+make clean
 make sequence_alignment
 
 max=15
